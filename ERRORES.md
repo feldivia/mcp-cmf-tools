@@ -18,8 +18,8 @@
 - **Fecha**: 2026-04-21
 - **Sintoma**: `pip install -e .` fallaba con "Multiple top-level packages discovered in a flat-layout"
 - **Causa**: setuptools detectaba `chat/`, `data/`, `frontend/`, `mcp_tools/` como paquetes Python
-- **Solucion**: Agregar `[tool.setuptools.packages.find]` con `include = ["mcp_tools*", "chat*"]`
-- **Leccion**: En proyectos flat-layout con carpetas mixtas (frontend, data), declarar packages explicitamente
+- **Solucion**: Agregar `[tool.setuptools.packages.find]` con `include = ["mcp_tools*"]`
+- **Leccion**: En proyectos flat-layout con carpetas mixtas, declarar packages explicitamente
 
 ### ERR-003: venv con permisos bloqueados
 - **Fecha**: 2026-04-21

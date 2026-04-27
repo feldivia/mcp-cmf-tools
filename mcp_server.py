@@ -2,7 +2,7 @@
 RegulBot MCP Server
 Local:   python mcp_server.py          (streamable-http en puerto 8080)
 Stdio:   python mcp_server.py stdio    (para MCP Inspector / mcp dev)
-Deploy:  Railway con Dockerfile.mcp
+Deploy:  Docker con Dockerfile
 """
 import os
 import sys
