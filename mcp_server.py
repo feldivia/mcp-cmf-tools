@@ -9,7 +9,7 @@ import sys
 
 from mcp.server.fastmcp import FastMCP
 
-from mcp_tools.cmf import verificar_institucion, indicadores_cmf, alertas_fraude
+from mcp_tools.cmf import indicadores_cmf, alertas_fraude
 from mcp_tools.mindicador import indicadores_economicos
 from mcp_tools.bcn import consultar_ley
 
@@ -28,15 +28,6 @@ mcp = FastMCP(
 # ════════════════════════════════════════════
 #  TOOLS
 # ════════════════════════════════════════════
-
-
-@mcp.tool()
-async def cmf_verificar_institucion(nombre: str) -> dict:
-    """Verifica si una institucion financiera esta registrada en la CMF.
-    Consulta el registro RIEF (Instituciones y Entidades Fiscalizadas) en cmfchile.cl.
-    Ejemplo: cmf_verificar_institucion("Banco Falabella")
-    """
-    return await verificar_institucion(nombre, CMF_API_KEY)
 
 
 @mcp.tool()
@@ -84,9 +75,8 @@ def verificar_empresa(nombre: str) -> str:
     """Verifica si una empresa financiera es legitima y segura."""
     return (
         f"Necesito verificar si '{nombre}' es una empresa financiera legitima en Chile. "
-        f"Primero usa cmf_verificar_institucion para ver si esta regulada por la CMF. "
-        f"Luego usa cmf_alertas para buscar si aparece en alertas de fraude. "
-        f"Finalmente, dame un resumen claro indicando si es segura o no."
+        f"Usa cmf_alertas para buscar si aparece en alertas de fraude. "
+        f"Dame un resumen claro indicando si es segura o no."
     )
 
 
