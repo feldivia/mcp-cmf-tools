@@ -1,6 +1,6 @@
 # MCP CMF Tools
 
-MCP Server con herramientas de regulacion financiera chilena. Consulta indicadores economicos (CMF, mindicador.cl), alertas de fraude y leyes vigentes.
+MCP Server con herramientas de regulacion financiera chilena. Consulta indicadores economicos (CMF, mindicador.cl) y alertas de fraude.
 
 ## Tools disponibles
 
@@ -9,7 +9,6 @@ MCP Server con herramientas de regulacion financiera chilena. Consulta indicador
 | `cmf_indicadores` | UF, dolar, euro, UTM desde la API CMF | Si |
 | `cmf_alertas` | Busca alertas de fraude en la CMF | No |
 | `chile_indicadores_economicos` | UF, dolar, IPC, TPM, bitcoin desde mindicador.cl | No |
-| `chile_consultar_ley` | Consulta leyes en la Biblioteca del Congreso Nacional | No |
 
 ## Prompts disponibles
 
@@ -17,7 +16,6 @@ MCP Server con herramientas de regulacion financiera chilena. Consulta indicador
 |---|---|---|
 | `verificar_empresa` | `nombre` | Verifica si una empresa aparece en alertas de fraude CMF |
 | `resumen_economico` | ninguno | Panorama economico actual de Chile |
-| `explicar_ley` | `id_norma` | Explica una ley chilena en lenguaje ciudadano |
 
 ---
 
@@ -142,7 +140,6 @@ Una vez conectado desde Claude Desktop o Claude Code, puedes hacer preguntas com
 - "Cuanto vale la UF hoy?"
 - "Dame el panorama economico de Chile"
 - "Busca si 'InverMax' aparece en alertas de fraude"
-- "Explicame la Ley Fintech en simple"
 
 ---
 
@@ -255,11 +252,10 @@ Una vez desplegado, los clientes MCP pueden conectarse apuntando a la URL del se
 
 ```
 mcp-cmf-tools/
-├── mcp_server.py          # Entry point: FastMCP (4 tools + 3 prompts)
+├── mcp_server.py          # Entry point: FastMCP (3 tools + 2 prompts)
 ├── mcp_tools/
 │   ├── cmf.py             # indicadores_cmf, alertas_fraude
-│   ├── mindicador.py      # indicadores_economicos
-│   └── bcn.py             # consultar_ley
+│   └── mindicador.py      # indicadores_economicos
 ├── scripts/
 │   └── test_tools.py      # Test directo de las tools
 ├── Dockerfile             # Deploy en contenedor
@@ -274,5 +270,4 @@ mcp-cmf-tools/
 |---|---|---|
 | API CMF | https://api.cmfchile.cl | API Key (gratis) |
 | mindicador.cl | https://mindicador.cl/api | No requiere |
-| Biblioteca del Congreso Nacional | https://www.leychile.cl | No requiere |
 | CMF Alertas | https://www.cmfchile.cl | No requiere |

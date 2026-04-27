@@ -15,13 +15,12 @@ Crear un MCP Server standalone usando FastMCP (Python) que exponga herramientas 
 - httpx para requests HTTP async
 - cachetools para cache en memoria con TTL
 
-### Fuentes de datos reales
+### Fuentes de datos
 
 | Fuente | Base URL | Auth |
 |---|---|---|
 | API CMF v3 | `https://api.cmfchile.cl/api-sbifv3/recursos_api` | API Key gratis en api.cmfchile.cl |
 | mindicador.cl | `https://mindicador.cl/api` | No requiere |
-| Biblioteca del Congreso Nacional | `https://www.leychile.cl/navegar?idNorma={id}` | No requiere |
 | CMF Alertas al Publico | `https://www.cmfchile.cl/portal/principal/613/w3-propertyvalue-43333.html` | No requiere |
 
 ### Restricciones de la API CMF
@@ -44,8 +43,7 @@ mcp-cmf-tools/
 ├── mcp_tools/
 │   ├── __init__.py
 │   ├── cmf.py             # indicadores_cmf, alertas_fraude
-│   ├── mindicador.py      # indicadores_economicos
-│   └── bcn.py             # consultar_ley
+│   └── mindicador.py      # indicadores_economicos
 ├── scripts/
 │   └── test_tools.py      # Test directo de cada tool
 ├── Dockerfile
@@ -110,28 +108,7 @@ indicadores_economicos() -> dict
 
 ---
 
-## Prompt 4: mcp_tools/bcn.py
-
-```
-Crea mcp_tools/bcn.py con:
-
-Un diccionario NORMAS con IDs de leyes financieras clave:
-- ley_fintech: "1187323" (Ley 21.521)
-- sernac_financiero: "1040348" (Ley 20.555)
-- consumidor: "141599" (Ley 19.496)
-- datos_personales: "141763" (Ley 19.628)
-
-Una funcion async consultar_ley(id_norma: str) -> dict:
-- Construye URL: https://www.leychile.cl/navegar?idNorma={id_norma}
-- Hace GET con follow_redirects=True
-- Si status 200, retorna: id_norma, url, disponible=True, fuente, nota
-- Si falla, retorna error
-- Sin cache (las leyes no cambian frecuentemente y la consulta es ligera)
-```
-
----
-
-## Prompt 5: mcp_server.py
+## Prompt 4: mcp_server.py
 
 ```
 Crea mcp_server.py como entry point del MCP server usando FastMCP:
@@ -148,7 +125,7 @@ Configuracion de FastMCP:
 
 CMF_API_KEY se lee de os.getenv("CMF_API_KEY", "")
 
-Registrar 4 tools con @mcp.tool():
+Registrar 3 tools con @mcp.tool():
 
 1. cmf_indicadores() -> dict
    Descripcion: "Obtiene indicadores financieros oficiales: UF, dolar, euro, UTM.
@@ -164,12 +141,7 @@ Registrar 4 tools con @mcp.tool():
    UF, dolar, euro, UTM, IPC, IMACEC, TPM, bitcoin.
    Fuente: mindicador.cl, actualizado cada hora, sin autenticacion."
 
-4. chile_consultar_ley(id_norma: str) -> dict
-   Descripcion: "Consulta una ley chilena en la Biblioteca del Congreso Nacional.
-   IDs utiles: 1187323 (Ley Fintech), 1040348 (SERNAC Financiero),
-   141599 (Consumidor), 141763 (Datos Personales)."
-
-Registrar 3 prompts con @mcp.prompt():
+Registrar 2 prompts con @mcp.prompt():
 
 1. verificar_empresa(nombre: str) -> str
    "Verifica si una empresa financiera es legitima y segura."
@@ -181,11 +153,6 @@ Registrar 3 prompts con @mcp.prompt():
    Genera texto que pide usar chile_indicadores_economicos y cmf_indicadores
    y presentar la info de forma simple.
 
-3. explicar_ley(id_norma: str) -> str
-   "Explica una ley chilena en lenguaje simple y ciudadano."
-   Genera texto que pide usar chile_consultar_ley y explicar que regula,
-   a quien protege, derechos principales y acciones ciudadanas.
-
 Al final:
 if __name__ == "__main__":
     transport = sys.argv[1] if len(sys.argv) > 1 else "streamable-http"
@@ -194,7 +161,7 @@ if __name__ == "__main__":
 
 ---
 
-## Prompt 6: Test y Dockerfile
+## Prompt 5: Test y Dockerfile
 
 ```
 Crea scripts/test_tools.py que:
@@ -213,7 +180,7 @@ Crea Dockerfile:
 
 ---
 
-## Prompt 7: Probar en local
+## Prompt 6: Probar en local
 
 ```
 Prueba el MCP server:
@@ -233,12 +200,10 @@ Prueba el MCP server:
    - cmf_indicadores (sin parametros)
    - cmf_alertas con busqueda "forex"
    - chile_indicadores_economicos (sin parametros)
-   - chile_consultar_ley con id_norma "1187323"
 
 5. Prueba cada prompt:
    - verificar_empresa con nombre "CryptoChile"
    - resumen_economico (sin parametros)
-   - explicar_ley con id_norma "1187323"
 ```
 
 ---
@@ -249,7 +214,6 @@ Prueba el MCP server:
 - CMF indicadores: TTLCache 24h (datos cambian 1 vez al dia)
 - CMF alertas: TTLCache 24h (pagina se actualiza esporadicamente)
 - mindicador.cl: TTLCache 1h (se actualiza cada hora)
-- BCN leyes: sin cache (consulta ligera, datos estaticos)
 
 ### Manejo de errores
 - Cada tool retorna un dict con key "error" si falla la consulta
@@ -257,8 +221,8 @@ Prueba el MCP server:
 - No se lanzan excepciones al MCP server, siempre se retorna un dict
 
 ### Transportes MCP
-- `python mcp_server.py` → streamable-http en puerto 8080 (para red/deploy)
-- `python mcp_server.py stdio` → stdin/stdout (para Claude Desktop, Claude Code, Inspector)
+- `python mcp_server.py` -> streamable-http en puerto 8080 (para red/deploy)
+- `python mcp_server.py stdio` -> stdin/stdout (para Claude Desktop, Claude Code, Inspector)
 
 ### Seguridad
 - Modo stdio: seguro por defecto, no abre puertos

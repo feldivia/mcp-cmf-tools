@@ -6,7 +6,7 @@
 
 ## Resumen
 
-MCP Server standalone de regulacion financiera chilena. Expone 4 tools y 3 prompts. Fuentes: API CMF (indicadores), mindicador.cl (indicadores), CMF web (alertas de fraude), leychile.cl (leyes). Se ejecuta via streamable-http o stdio.
+MCP Server standalone de regulacion financiera chilena. Expone 3 tools y 2 prompts. Fuentes: API CMF (indicadores), mindicador.cl (indicadores), CMF web (alertas de fraude). Se ejecuta via streamable-http o stdio.
 
 ---
 
@@ -26,10 +26,9 @@ Docker (Dockerfile)               --> Deploy en contenedor
 
 | Archivo | Estado | Descripcion |
 |---|---|---|
-| `mcp_server.py` | OK | Entry point: FastMCP con 4 tools + 3 prompts |
+| `mcp_server.py` | OK | Entry point: FastMCP con 3 tools + 2 prompts |
 | `mcp_tools/cmf.py` | OK | 2 funciones: indicadores_cmf, alertas_fraude |
 | `mcp_tools/mindicador.py` | OK | 1 funcion: indicadores_economicos (mindicador.cl, sin auth) |
-| `mcp_tools/bcn.py` | OK | 1 funcion: consultar_ley (leychile.cl) + dict NORMAS |
 
 ### Configuracion
 
@@ -47,18 +46,16 @@ Docker (Dockerfile)               --> Deploy en contenedor
 
 ---
 
-## Tools MCP (4)
+## Tools MCP (3)
 
 1. **cmf_indicadores()** — UF, dolar, euro, UTM desde API CMF (requiere API key)
 2. **cmf_alertas(busqueda)** — Busca en alertas de fraude CMF (scraping web)
 3. **chile_indicadores_economicos()** — Indicadores desde mindicador.cl (sin auth)
-4. **chile_consultar_ley(id_norma)** — Consulta leyes en leychile.cl (sin auth)
 
-## Prompts MCP (3)
+## Prompts MCP (2)
 
 1. **verificar_empresa(nombre)** — Busca en alertas de fraude CMF
 2. **resumen_economico()** — Panorama economico completo de Chile
-3. **explicar_ley(id_norma)** — Explica una ley en lenguaje ciudadano
 
 ---
 

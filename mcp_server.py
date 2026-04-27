@@ -11,7 +11,6 @@ from mcp.server.fastmcp import FastMCP
 
 from mcp_tools.cmf import indicadores_cmf, alertas_fraude
 from mcp_tools.mindicador import indicadores_economicos
-from mcp_tools.bcn import consultar_ley
 
 CMF_API_KEY = os.getenv("CMF_API_KEY", "")
 
@@ -56,15 +55,6 @@ async def chile_indicadores_economicos() -> dict:
     return await indicadores_economicos()
 
 
-@mcp.tool()
-async def chile_consultar_ley(id_norma: str) -> dict:
-    """Consulta una ley chilena en la Biblioteca del Congreso Nacional.
-    IDs utiles: 1187323 (Ley Fintech), 1040348 (SERNAC Financiero),
-    141599 (Consumidor), 141763 (Datos Personales).
-    """
-    return await consultar_ley(id_norma)
-
-
 # ════════════════════════════════════════════
 #  PROMPTS
 # ════════════════════════════════════════════
@@ -88,19 +78,6 @@ def resumen_economico() -> str:
         "Usa chile_indicadores_economicos para obtener UF, dolar, euro, IPC, TPM, etc. "
         "Tambien usa cmf_indicadores para los datos oficiales de la CMF. "
         "Presenta la informacion de forma clara y simple para un ciudadano comun."
-    )
-
-
-@mcp.prompt()
-def explicar_ley(id_norma: str) -> str:
-    """Explica una ley chilena en lenguaje simple y ciudadano."""
-    return (
-        f"Usa chile_consultar_ley con id_norma '{id_norma}' para obtener la referencia. "
-        f"Luego explicame en lenguaje simple y ciudadano: "
-        f"que regula esta ley, a quien protege, cuales son los derechos principales, "
-        f"y que puede hacer un ciudadano si se vulneran sus derechos. "
-        f"IDs utiles: 1187323 (Ley Fintech), 1040348 (SERNAC Financiero), "
-        f"141599 (Consumidor), 141763 (Datos Personales)."
     )
 
 
