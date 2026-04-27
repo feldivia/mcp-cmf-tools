@@ -7,55 +7,6 @@ _cache = TTLCache(maxsize=200, ttl=86400)  # 24h
 CMF_BASE = "https://api.cmfchile.cl/api-sbifv3/recursos_api"
 
 
-async def verificar_institucion(nombre: str, cmf_api_key: str) -> dict:
-    """Verifica si una institucion financiera esta regulada por la CMF.
-    Consulta el registro RIEF (Registro de Instituciones y Entidades Fiscalizadas).
-    """
-    key = f"inst:{nombre.lower()}"
-    if key in _cache:
-        return _cache[key]
-
-    rief_url = (
-        "https://www.cmfchile.cl/instituciones/inc/informacion_702.php"
-        f"?txt_nombre={nombre}"
-    )
-
-    async with httpx.AsyncClient(timeout=15, follow_redirects=True) as client:
-        try:
-            r = await client.get(rief_url)
-            if r.status_code == 200:
-                html = r.text.lower()
-                termino = nombre.lower()
-                if termino in html and "no se encontraron" not in html:
-                    result = {
-                        "encontrada": True,
-                        "nombre": nombre,
-                        "tipo": "Institucion registrada en la CMF",
-                        "regulador": "CMF",
-                        "url_consulta": rief_url,
-                        "fuente": "CMF — RIEF (cmfchile.cl)",
-                    }
-                    _cache[key] = result
-                    return result
-        except httpx.RequestError as e:
-            return {"error": f"Error conectando con CMF: {e}"}
-
-    result = {
-        "encontrada": False,
-        "nombre": nombre,
-        "mensaje": (
-            "No encontrada en el registro de la CMF. "
-            "Puede que: (a) no sea una institucion regulada, "
-            "(b) opere bajo otro nombre, o (c) no este registrada. "
-            "Verifica en cmfchile.cl o llama al (56-2) 2887-9200."
-        ),
-        "url_consulta": rief_url,
-        "fuente": "CMF — RIEF",
-    }
-    _cache[key] = result
-    return result
-
-
 async def indicadores_cmf(cmf_api_key: str) -> dict:
     """Obtiene UF, dolar, euro, UTM desde la API CMF."""
     if "ind" in _cache:

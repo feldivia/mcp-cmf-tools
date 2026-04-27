@@ -9,7 +9,7 @@ import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from mcp_tools.cmf import verificar_institucion, indicadores_cmf, alertas_fraude
+from mcp_tools.cmf import indicadores_cmf, alertas_fraude
 from mcp_tools.mindicador import indicadores_economicos
 from mcp_tools.bcn import consultar_ley
 
@@ -18,43 +18,35 @@ CMF_API_KEY = os.getenv("CMF_API_KEY", "")
 
 async def test_all():
     print("=" * 60)
-    print("Testing RegulBot MCP Tools")
+    print("Testing MCP CMF Tools")
     print("=" * 60)
 
-    # Test 1: Verificar institución
-    print("\n1. verificar_institucion('Banco Falabella')")
-    try:
-        result = await verificar_institucion("Banco Falabella", CMF_API_KEY)
-        print(f"   Result: {json.dumps(result, ensure_ascii=False, indent=2)[:200]}")
-    except Exception as e:
-        print(f"   Error: {e}")
-
-    # Test 2: Indicadores económicos (mindicador.cl)
-    print("\n2. indicadores_economicos()")
+    # Test 1: Indicadores economicos (mindicador.cl)
+    print("\n1. indicadores_economicos()")
     try:
         result = await indicadores_economicos()
         print(f"   Result: {json.dumps(result, ensure_ascii=False, indent=2)[:300]}")
     except Exception as e:
         print(f"   Error: {e}")
 
-    # Test 3: Consultar ley
-    print("\n3. consultar_ley('1187323') — Ley Fintech")
+    # Test 2: Consultar ley
+    print("\n2. consultar_ley('1187323') — Ley Fintech")
     try:
         result = await consultar_ley("1187323")
         print(f"   Result: {json.dumps(result, ensure_ascii=False, indent=2)}")
     except Exception as e:
         print(f"   Error: {e}")
 
-    # Test 4: Alertas de fraude (consulta en vivo a CMF)
-    print("\n4. alertas_fraude('forex')")
+    # Test 3: Alertas de fraude (consulta en vivo a CMF)
+    print("\n3. alertas_fraude('forex')")
     try:
         result = await alertas_fraude("forex")
         print(f"   Result: {json.dumps(result, ensure_ascii=False, indent=2)[:300]}")
     except Exception as e:
         print(f"   Error: {e}")
 
-    # Test 5: Indicadores CMF
-    print("\n5. indicadores_cmf()")
+    # Test 4: Indicadores CMF
+    print("\n4. indicadores_cmf()")
     try:
         result = await indicadores_cmf(CMF_API_KEY)
         print(f"   Result: {json.dumps(result, ensure_ascii=False, indent=2)[:300]}")
