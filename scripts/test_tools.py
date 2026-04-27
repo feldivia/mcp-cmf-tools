@@ -45,10 +45,10 @@ async def test_all():
     except Exception as e:
         print(f"   Error: {e}")
 
-    # Test 4: Alertas de fraude
-    print("\n4. alertas_fraude('inversión garantizada')")
+    # Test 4: Alertas de fraude (consulta en vivo a CMF)
+    print("\n4. alertas_fraude('forex')")
     try:
-        result = await alertas_fraude("inversión garantizada")
+        result = await alertas_fraude("forex")
         print(f"   Result: {json.dumps(result, ensure_ascii=False, indent=2)[:300]}")
     except Exception as e:
         print(f"   Error: {e}")
